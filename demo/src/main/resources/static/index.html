@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Multilingüe API</title>
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Íconos -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- CSS personalizado -->
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-800: #343a40;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--gray-100);
+            color: var(--dark);
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+            color: white;
+            padding: 50px 0;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(30deg);
+        }
+
+        .header h1 {
+            font-weight: 700;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-weight: 300;
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            font-weight: 600;
+            padding: 15px 20px;
+            border: none;
+        }
+
+        .card-header i {
+            margin-right: 10px;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 1px solid var(--gray-300);
+            transition: all 0.2s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            border-color: var(--primary);
+        }
+
+        .language-selector {
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            border: none;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(to right, var(--primary-dark), var(--secondary));
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn i {
+            margin-right: 8px;
+        }
+
+        .result-container {
+            background-color: var(--gray-200);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            transition: all 0.3s;
+            max-height: 300px;
+            overflow: auto;
+        }
+
+        pre {
+            background-color: var(--gray-800);
+            color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            overflow: auto;
+            margin: 0;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--gray-800);
+            margin-top: 40px;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .product-card {
+            border-radius: 10px;
+            border: 1px solid var(--gray-300);
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.2s;
+        }
+
+        .product-card:hover {
+            background-color: var(--gray-100);
+            border-color: var(--primary);
+        }
+
+        .product-title {
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .product-controls {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .product-quantity {
+            width: 80px;
+            margin-left: 10px;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
+
+        .badge-stock {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading i {
+            animation: spin 1s infinite linear;
+            color: var(--primary);
+            font-size: 2rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: white;
+            color: var(--dark);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.3s forwards;
+            overflow: hidden;
+        }
+
+        .toast-success {
+            border-left: 5px solid #28a745;
+        }
+
+        .toast-error {
+            border-left: 5px solid #dc3545;
+        }
+
+        .toast-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .toast-body {
+            padding: 12px 15px;
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Tabs */
+        .nav-tabs {
+            border-bottom: none;
+            margin-bottom: 30px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            color: var(--gray-800);
+            padding: 12px 20px;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: all 0.2s;
+            margin-right: 10px;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: white;
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 0;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .header p {
+                font-size: 1rem;
+            }
+            .card-body {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Header -->
+    <div class="header text-center">
+        <h1><i class="bi bi-globe"></i> API Multilingüe</h1>
+        <p>Una API REST con soporte para varios idiomas</p>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="mainTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="saludos-tab" data-bs-toggle="tab" data-bs-target="#saludos-tab-pane" type="button" role="tab" aria-controls="saludos-tab-pane" aria-selected="true">
+                <i class="bi bi-chat-dots"></i> Saludos
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="productos-tab" data-bs-toggle="tab" data-bs-target="#productos-tab-pane" type="button" role="tab" aria-controls="productos-tab-pane" aria-selected="false">
+                <i class="bi bi-box-seam"></i> Productos
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pedidos-tab" data-bs-toggle="tab" data-bs-target="#pedidos-tab-pane" type="button" role="tab" aria-controls="pedidos-tab-pane" aria-selected="false">
+                <i class="bi bi-cart"></i> Pedidos
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="crear-tab" data-bs-toggle="tab" data-bs-target="#crear-tab-pane" type="button" role="tab" aria-controls="crear-tab-pane" aria-selected="false">
+                <i class="bi bi-plus-circle"></i> Crear Pedido
+            </button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="mainTabContent">
+        <!-- Saludos Tab -->
+        <div class="tab-pane fade show active" id="saludos-tab-pane" role="tabpanel" aria-labelledby="saludos-tab" tabindex="0">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-chat-dots"></i> Probar Saludos
+                        </div>
+                        <div class="card-body">
+                            <div class="language-selector">
+                                <label for="lang-saludo" class="form-label">Selecciona idioma:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-translate"></i></span>
+                                    <select class="form-select" id="lang-saludo">
+                                        <option value="en">English</option>
+                                        <option value="es">Español</option>
+                                        <option value="fr">Français</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary w-100" id="btn-saludo">
+                                <i class="bi bi-send"></i> Obtener Saludo
+                            </button>
+                            <div class="loading" id="saludo-loading">
+                                <i class="bi bi-arrow-repeat"></i>
+                            </div>
+                            <div class="result-container" id="saludo-result"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Productos Tab -->
+        <div class="tab-pane fade" id="productos-tab-pane" role="tabpanel" aria-labelledby="productos-tab" tabindex="0">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-box-seam"></i> Productos Disponibles
+                        </div>
+                        <div class="card-body">
+                            <button class="btn btn-primary mb-4" id="btn-productos">
+                                <i class="bi bi-arrow-clockwise"></i> Actualizar Productos
+                            </button>
+                            <div class="loading" id="productos-loading">
+                                <i class="bi bi-arrow-repeat"></i>
+                            </div>
+                            <div class="row" id="productos-lista"></div>
+                            <div class="result-container" id="productos-result"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pedidos Tab -->
+        <div class="tab-pane fade" id="pedidos-tab-pane" role="tabpanel" aria-labelledby="pedidos-tab" tabindex="0">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-cart"></i> Pedidos Realizados
+                        </div>
+                        <div class="card-body">
+                            <div class="language-selector">
+                                <label for="lang-pedidos" class="form-label">Selecciona idioma:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-translate"></i></span>
+                                    <select class="form-select" id="lang-pedidos">
+                                        <option value="en">English</option>
+                                        <option value="es">Español</option>
+                                        <option value="fr">Français</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary w-100" id="btn-pedidos">
+                                <i class="bi bi-arrow-clockwise"></i> Obtener Pedidos
+                            </button>
+                            <div class="loading" id="pedidos-loading">
+                                <i class="bi bi-arrow-repeat"></i>
+                            </div>
+                            <div id="pedidos-lista" class="mt-4"></div>
+                            <div class="result-container" id="pedidos-result"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Crear Pedido Tab -->
+        <div class="tab-pane fade" id="crear-tab-pane" role="tabpanel" aria-labelledby="crear-tab" tabindex="0">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="card">
+                        <div class="card-header">
+                            <i class="bi bi-plus-circle"></i> Crear Pedido
+                        </div>
+                        <div class="card-body">
+                            <div class="language-selector">
+                                <label for="lang-crear" class="form-label">Selecciona idioma:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-translate"></i></span>
+                                    <select class="form-select" id="lang-crear">
+                                        <option value="en">English</option>
+                                        <option value="es">Español</option>
+                                        <option value="fr">Français</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="cliente-id" class="form-label">ID de Cliente:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                    <input type="text" class="form-control" id="cliente-id" value="cliente123">
+                                </div>
+                            </div>
+
+                            <h5 class="mb-3"><i class="bi bi-cart-plus"></i> Selecciona productos</h5>
+                            <div class="alert alert-info" role="alert">
+                                <i class="bi bi-info-circle"></i> Primero carga los productos desde la pestaña "Productos".
+                            </div>
+                            <div id="productos-seleccion" class="mb-4"></div>
+
+                            <button class="btn btn-primary w-100" id="btn-crear-pedido">
+                                <i class="bi bi-check-circle"></i> Crear Pedido
+                            </button>
+                            <div class="loading" id="crear-loading">
+                                <i class="bi bi-arrow-repeat"></i>
+                            </div>
+                            <div class="result-container" id="crear-result"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documentation Card -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-book"></i> Documentación de la API
+                </div>
+                <div class="card-body text-center">
+                    <p>Explora la documentación completa de la API y prueba todos los endpoints:</p>
+                    <a href="/swagger-ui.html" class="btn btn-primary" target="_blank">
+                        <i class="bi bi-file-text"></i> Abrir Swagger UI
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>API de Tienda Multilingüe - Creada con Spring Boot y WebFlux</p>
+            <p class="mb-0">
+                <a href="https://spring.io/projects/spring-boot" target="_blank"><i class="bi bi-flower1"></i> Spring Boot</a> &bull;
+                <a href="https://projectreactor.io/" target="_blank"><i class="bi bi-radioactive"></i> WebFlux</a> &bull;
+                <a href="https://getbootstrap.com/" target="_blank"><i class="bi bi-bootstrap"></i> Bootstrap</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container"></div>
+</div>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- App JavaScript -->
+<script>
+    // Función para mostrar resultados JSON
+    function showResult(elementId, data) {
+        const element = document.getElementById(elementId);
+        element.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    }
+
+    // Función para mostrar/ocultar indicadores de carga
+    function toggleLoading(elementId, show) {
+        const element = document.getElementById(elementId);
+        element.style.display = show ? 'block' : 'none';
+    }
+
+    // Función para mostrar notificaciones toast
+    function showToast(type, title, message) {
+        const toastContainer = document.querySelector('.toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+                <div class="toast-header">
+                    <strong>${title}</strong>
+                    <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button>
+                </div>
+                <div class="toast-body">${message}</div>
+            `;
+        toastContainer.appendChild(toast);
+
+        // Auto-eliminar después de 5 segundos
+        setTimeout(() => {
+            toast.remove();
+        }, 5000);
+    }
+
+    // Obtener saludo
+    document.getElementById('btn-saludo').addEventListener('click', async () => {
+        const lang = document.getElementById('lang-saludo').value;
+        toggleLoading('saludo-loading', true);
+
+        try {
+            const response = await fetch(`/api/saludos?lang=${lang}`);
+            const data = await response.json();
+            showResult('saludo-result', data);
+            if (data.success) {
+                showToast('success', 'Éxito', 'Saludo obtenido correctamente');
+            } else {
+                showToast('error', 'Error', data.message || 'Error al obtener saludo');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showResult('saludo-result', { error: 'Error al obtener saludo' });
+            showToast('error', 'Error', 'No se pudo conectar con el servidor');
+        } finally {
+            toggleLoading('saludo-loading', false);
+        }
+    });
+
+    // Render productos en una lista visual
+    function renderProductos(productData) {
+        const container = document.getElementById('productos-lista');
+        container.innerHTML = '';
+
+        const selectionContainer = document.getElementById('productos-seleccion');
+        selectionContainer.innerHTML = '';
+
+        if (Array.isArray(productData)) {
+            if (productData.length === 0) {
+                container.innerHTML = '<div class="col-12"><div class="alert alert-warning">No hay productos disponibles</div></div>';
+                return;
+            }
+
+            productData.forEach(productResponse => {
+                const product = productResponse.data;
+                if (product) {
+                    // Card para la lista de productos
+                    const col = document.createElement('div');
+                    col.className = 'col-md-6 col-lg-4 mb-4';
+                    col.innerHTML = `
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h5 class="card-title mb-0">${product.nombre}</h5>
+                                        <span class="badge badge-stock">Stock: ${product.stock}</span>
+                                    </div>
+                                    <h6 class="product-price mb-3">$${product.precio.toFixed(2)}</h6>
+                                    <p class="card-text">${product.descripcion || 'Sin descripción'}</p>
+                                </div>
+                                <div class="card-footer bg-white border-top-0">
+                                    <button class="btn btn-outline-primary w-100" onclick="showProductDetails('${product.id}')">
+                                        <i class="bi bi-info-circle"></i> Ver detalles
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    container.appendChild(col);
+
+                    // Card para la selección de productos (Crear Pedido)
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                            <div class="product-title">
+                                <div class="form-check">
+                                    <input class="form-check-input product-check" type="checkbox" value="${product.id}" id="product-${product.id}">
+                                    <label class="form-check-label" for="product-${product.id}">
+                                        ${product.nombre}
+                                    </label>
+                                </div>
+                                <span class="product-price">$${product.precio.toFixed(2)}</span>
+                            </div>
+                            <div class="product-controls">
+                                <span class="badge bg-info">Stock: ${product.stock}</span>
+                                <div class="input-group product-quantity">
+                                    <span class="input-group-text">Cant.</span>
+                                    <input type="number" class="form-control" id="cantidad-${product.id}" value="1" min="1" max="${product.stock}">
+                                </div>
+                            </div>
+                        `;
+                    selectionContainer.appendChild(productCard);
+                }
+            });
+        } else {
+            container.innerHTML = '<div class="col-12"><div class="alert alert-danger">Formato de datos incorrecto</div></div>';
+        }
+    }
+
+    // Mostrar detalles de un producto
+    function showProductDetails(productId) {
+        fetch(`/api/productos/${productId}`)
+            .then(response => response.json())
+            .then(data => {
+                const product = data.data;
+                showToast('success', product.nombre, `Precio: $${product.precio.toFixed(2)} - Stock: ${product.stock}`);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('error', 'Error', 'No se pudo obtener los detalles del producto');
+            });
+    }
+
+    // Obtener productos
+    document.getElementById('btn-productos').addEventListener('click', async () => {
+        toggleLoading('productos-loading', true);
+
+        try {
+            const response = await fetch('/api/productos');
+            const data = await response.json();
+            showResult('productos-result', data);
+            renderProductos(data);
+            showToast('success', 'Productos', 'Se han cargado los productos correctamente');
+        } catch (error) {
+            console.error('Error:', error);
+            showResult('productos-result', { error: 'Error al obtener productos' });
+            showToast('error', 'Error', 'No se pudo obtener la lista de productos');
+        } finally {
+            toggleLoading('productos-loading', false);
+        }
+    });
+
+    // Renderizar pedidos
+    function renderPedidos(pedidosData) {
+        const container = document.getElementById('pedidos-lista');
+        container.innerHTML = '';
+
+        if (Array.isArray(pedidosData) && pedidosData.length > 0) {
+            pedidosData.forEach(response => {
+                const pedido = response.data;
+                if (pedido) {
+                    const card = document.createElement('div');
+                    card.className = 'card mb-3';
+
+                    let estadoClass = 'bg-secondary';
+                    if (pedido.estado === 'PENDIENTE') estadoClass = 'bg-warning';
+                    if (pedido.estado === 'PROCESANDO') estadoClass = 'bg-info';
+                    if (pedido.estado === 'ENVIADO') estadoClass = 'bg-primary';
+                    if (pedido.estado === 'ENTREGADO') estadoClass = 'bg-success';
+                    if (pedido.estado === 'CANCELADO') estadoClass = 'bg-danger';
+
+                    const fecha = new Date(pedido.fechaPedido);
+                    const fechaFormateada = `${fecha.toLocaleDateString()} ${fecha.toLocaleTimeString()}`;
+
+                    let elementosHTML = '';
+                    pedido.elementos.forEach(elem => {
+                        elementosHTML += `
+                                <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                                    <div>
+                                        <span class="fw-bold">${elem.nombreProducto || 'Producto'}</span>
+                                        <span class="text-muted"> x${elem.cantidad}</span>
+                                    </div>
+                                    <span class="text-end">$${(elem.precioUnitario * elem.cantidad).toFixed(2)}</span>
+                                </div>
+                            `;
+                    });
+
+                    card.innerHTML = `
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span><i class="bi bi-box"></i> Pedido #${pedido.id}</span>
+                                <span class="badge ${estadoClass}">${pedido.estado}</span>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-2"><i class="bi bi-person"></i> Cliente: ${pedido.clienteId}</p>
+                                <p class="mb-3"><i class="bi bi-calendar3"></i> Fecha: ${fechaFormateada}</p>
+
+                                <h6 class="fw-bold mb-2">Productos:</h6>
+                                <div class="mb-3">
+                                    ${elementosHTML}
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center fw-bold mt-3">
+                                    <span>Total:</span>
+                                    <span class="h5 mb-0 text-primary">$${pedido.total.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        `;
+
+                    container.appendChild(card);
+                }
+            });
+        } else {
+            container.innerHTML = '<div class="alert alert-info"><i class="bi bi-info-circle"></i> No hay pedidos disponibles</div>';
+        }
+    }
+
+    // Obtener pedidos
+    document.getElementById('btn-pedidos').addEventListener('click', async () => {
+        const lang = document.getElementById('lang-pedidos').value;
+        toggleLoading('pedidos-loading', true);
+
+        try {
+            const response = await fetch(`/api/pedidos?lang=${lang}`);
+            const data = await response.json();
+            showResult('pedidos-result', data);
+            renderPedidos(data);
+            showToast('success', 'Pedidos', 'Se han cargado los pedidos correctamente');
+        } catch (error) {
+            console.error('Error:', error);
+            showResult('pedidos-result', { error: 'Error al obtener pedidos' });
+            showToast('error', 'Error', 'No se pudo obtener la lista de pedidos');
+        } finally {
+            toggleLoading('pedidos-loading', false);
+        }
+    });
+
+    // Crear pedido
+    document.getElementById('btn-crear-pedido').addEventListener('click', async () => {
+        const lang = document.getElementById('lang-crear').value;
+        const clienteId = document.getElementById('cliente-id').value;
+        toggleLoading('crear-loading', true);
+
+        // Validar cliente
+        if (!clienteId.trim()) {
+            showToast('error', 'Error', 'El ID de cliente es obligatorio');
+            toggleLoading('crear-loading', false);
+            return;
+        }
+
+        // Obtener productos seleccionados
+        const elementos = [];
+        document.querySelectorAll('.product-check:checked').forEach(checkbox => {
+            const productoId = checkbox.value;
+            const cantidadEl = document.getElementById(`cantidad-${productoId}`);
+            const cantidad = parseInt(cantidadEl.value);
+
+            if (cantidad > 0) {
+                elementos.push({
+                    productoId,
+                    cantidad
+                });
+            }
+        });
+
+        if (elementos.length === 0) {
+            showToast('error', 'Error', 'Selecciona al menos un producto');
+            toggleLoading('crear-loading', false);
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/pedidos?lang=${lang}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    clienteId,
+                    elementos
+                })
+            });
+
+            const data = await response.json();
+            showResult('crear-result', data);
+
+            if (data.success) {
+                showToast('success', 'Éxito', 'Pedido creado correctamente');
+                // Limpiar selecciones
+                document.querySelectorAll('.product-check:checked').forEach(cb => {
+                    cb.checked = false;
+                });
+                // Refrescar listas
+                document.getElementById('btn-productos').click();
+
+                // Cambiar a la pestaña de pedidos y actualizar la lista
+                setTimeout(() => {
+                    document.getElementById('pedidos-tab').click();
+                    document.getElementById('btn-pedidos').click();
+                }, 1000);
+            } else {
+                showToast('error', 'Error', data.message || 'Error al crear el pedido');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showResult('crear-result', { error: 'Error al crear pedido' });
+            showToast('error', 'Error', 'No se pudo crear el pedido');
+        } finally {
+            toggleLoading('crear-loading', false);
+        }
+    });
+
+    // Cargar datos iniciales
+    window.addEventListener('load', () => {
+        // Iniciar cargando productos
+        document.getElementById('btn-productos').click();
+    });
+</script>
+</body>
+</html>
