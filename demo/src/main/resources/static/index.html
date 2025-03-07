@@ -516,7 +516,88 @@
             </div>
         </div>
     </div>
+    <!-- Agregar Producto Tab -->
+    <div class="tab-pane fade" id="agregar-producto-tab-pane" role="tabpanel" aria-labelledby="agregar-producto-tab" tabindex="0">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-box-fill"></i> Agregar Nuevo Producto
+                    </div>
+                    <div class="card-body">
+                        <form id="form-agregar-producto">
+                            <div class="mb-3">
+                                <label for="producto-id" class="form-label">ID del Producto:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-key"></i></span>
+                                    <input type="text" class="form-control" id="producto-id" required placeholder="Ej: prod-123">
+                                </div>
+                                <div class="form-text">Identificador único para el producto</div>
+                            </div>
 
+                            <div class="mb-3">
+                                <label for="producto-nombre" class="form-label">Nombre:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                    <input type="text" class="form-control" id="producto-nombre" required placeholder="Ej: Laptop HP">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="producto-precio" class="form-label">Precio:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                                    <input type="number" class="form-control" id="producto-precio" required min="0.01" step="0.01" placeholder="Ej: 999.99">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="producto-descripcion" class="form-label">Descripción:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                    <textarea class="form-control" id="producto-descripcion" rows="3" placeholder="Descripción del producto..."></textarea>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="producto-stock" class="form-label">Stock:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-boxes"></i></span>
+                                    <input type="number" class="form-control" id="producto-stock" required min="0" step="1" value="1" placeholder="Ej: 10">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="producto-lang" class="form-label">Idioma de respuesta:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-translate"></i></span>
+                                    <select class="form-select" id="producto-lang">
+                                        <option value="en">English</option>
+                                        <option value="es">Español</option>
+                                        <option value="fr">Français</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-plus-circle"></i> Crear Producto
+                            </button>
+                        </form>
+
+                        <div class="loading" id="agregar-producto-loading">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </div>
+                        <div class="result-container" id="agregar-producto-result"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="agregar-producto-tab" data-bs-toggle="tab" data-bs-target="#agregar-producto-tab-pane" type="button" role="tab" aria-controls="agregar-producto-tab-pane" aria-selected="false">
+            <i class="bi bi-box-fill"></i> Agregar Producto
+        </button>
+    </li>
     <!-- Documentation Card -->
     <div class="row justify-content-center mt-4">
         <div class="col-lg-8">
@@ -545,6 +626,63 @@
             </p>
         </div>
     </footer>
+    <!-- Modal Editar Producto -->
+    <div class="modal fade" id="editarProductoModal" tabindex="-1" aria-labelledby="editarProductoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarProductoModalLabel">Editar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-editar-producto">
+                        <input type="hidden" id="editar-producto-id">
+
+                        <div class="mb-3">
+                            <label for="editar-producto-nombre" class="form-label">Nombre:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                <input type="text" class="form-control" id="editar-producto-nombre" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editar-producto-precio" class="form-label">Precio:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                                <input type="number" class="form-control" id="editar-producto-precio" required min="0.01" step="0.01">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editar-producto-descripcion" class="form-label">Descripción:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                <textarea class="form-control" id="editar-producto-descripcion" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editar-producto-stock" class="form-label">Stock:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-boxes"></i></span>
+                                <input type="number" class="form-control" id="editar-producto-stock" required min="0" step="1">
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="loading" id="editar-producto-loading">
+                        <i class="bi bi-arrow-repeat"></i>
+                    </div>
+                    <div class="result-container" id="editar-producto-result"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="btn-guardar-edicion">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Toast Container -->
     <div class="toast-container"></div>
@@ -587,24 +725,38 @@
         }, 5000);
     }
 
-    // Obtener saludo
+    // Obtener saludo - versión mejorada
     document.getElementById('btn-saludo').addEventListener('click', async () => {
         const lang = document.getElementById('lang-saludo').value;
         toggleLoading('saludo-loading', true);
 
         try {
             const response = await fetch(`/api/saludos?lang=${lang}`);
+
+            // Verificar si la respuesta es correcta
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error en la respuesta:', response.status, errorText);
+                throw new Error(`Error HTTP ${response.status}: ${response.statusText}`);
+            }
+
             const data = await response.json();
             showResult('saludo-result', data);
+
             if (data.success) {
                 showToast('success', 'Éxito', 'Saludo obtenido correctamente');
+                // Cambiar el idioma de toda la interfaz
+                establecerIdioma(lang);
             } else {
                 showToast('error', 'Error', data.message || 'Error al obtener saludo');
             }
         } catch (error) {
-            console.error('Error:', error);
-            showResult('saludo-result', { error: 'Error al obtener saludo' });
-            showToast('error', 'Error', 'No se pudo conectar con el servidor');
+            console.error('Error detallado:', error);
+            showResult('saludo-result', {
+                error: `Error al obtener saludo: ${error.message}`,
+                tip: "Verifica que el servidor esté funcionando correctamente"
+            });
+            showToast('error', 'Error', `Problema de conexión: ${error.message}`);
         } finally {
             toggleLoading('saludo-loading', false);
         }
@@ -640,11 +792,20 @@
                                     <h6 class="product-price mb-3">$${product.precio.toFixed(2)}</h6>
                                     <p class="card-text">${product.descripcion || 'Sin descripción'}</p>
                                 </div>
-                                <div class="card-footer bg-white border-top-0">
-                                    <button class="btn btn-outline-primary w-100" onclick="showProductDetails('${product.id}')">
-                                        <i class="bi bi-info-circle"></i> Ver detalles
-                                    </button>
-                                </div>
+<div class="card-footer bg-white border-top-0">
+    <div class="row">
+        <div class="col-6">
+            <button class="btn btn-outline-primary w-100" onclick="showProductDetails('${product.id}')">
+                <i class="bi bi-info-circle"></i> Ver
+            </button>
+        </div>
+        <div class="col-6">
+            <button class="btn btn-outline-secondary w-100" onclick="editarProducto('${product.id}')">
+                <i class="bi bi-pencil"></i> Editar
+            </button>
+        </div>
+    </div>
+</div>>
                             </div>
                         `;
                     container.appendChild(col);
@@ -764,6 +925,12 @@
                                     <span>Total:</span>
                                     <span class="h5 mb-0 text-primary">$${pedido.total.toFixed(2)}</span>
                                 </div>
+
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <button class="btn btn-danger" onclick="eliminarPedido('${pedido.id}')">
+                                        <i class="bi bi-trash"></i> Eliminar pedido
+                                    </button>
+                                </div>
                             </div>
                         `;
 
@@ -772,6 +939,36 @@
             });
         } else {
             container.innerHTML = '<div class="alert alert-info"><i class="bi bi-info-circle"></i> No hay pedidos disponibles</div>';
+        }
+    }
+
+    // Función para eliminar un pedido
+    function eliminarPedido(id) {
+        if (confirm('¿Estás seguro de que deseas eliminar este pedido?')) {
+            const lang = document.getElementById('lang-pedidos').value;
+
+            fetch(`/api/pedidos/${id}?lang=${lang}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('success', 'Éxito', data.message || 'Pedido eliminado correctamente');
+                        // Recargar la lista de pedidos
+                        document.getElementById('btn-pedidos').click();
+                        // Recargar productos (para actualizar el stock)
+                        document.getElementById('btn-productos').click();
+                    } else {
+                        showToast('error', 'Error', data.message || 'Error al eliminar el pedido');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('error', 'Error', 'No se pudo conectar con el servidor');
+                });
         }
     }
 
@@ -807,6 +1004,64 @@
             toggleLoading('crear-loading', false);
             return;
         }
+
+        // Crear producto
+        document.getElementById('form-agregar-producto').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const lang = document.getElementById('producto-lang').value;
+            const id = document.getElementById('producto-id').value.trim();
+            const nombre = document.getElementById('producto-nombre').value.trim();
+            const precio = parseFloat(document.getElementById('producto-precio').value);
+            const descripcion = document.getElementById('producto-descripcion').value.trim();
+            const stock = parseInt(document.getElementById('producto-stock').value);
+
+            if (!id || !nombre || isNaN(precio) || precio <= 0 || isNaN(stock) || stock < 0) {
+                showToast('error', 'Error', 'Por favor, completa todos los campos obligatorios correctamente.');
+                return;
+            }
+
+            toggleLoading('agregar-producto-loading', true);
+
+            try {
+                const response = await fetch(`/api/productos?lang=${lang}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id,
+                        nombre,
+                        precio,
+                        descripcion,
+                        stock
+                    })
+                });
+
+                const data = await response.json();
+                showResult('agregar-producto-result', data);
+
+                if (data.success) {
+                    showToast('success', 'Éxito', 'Producto creado correctamente');
+                    // Limpiar formulario
+                    document.getElementById('form-agregar-producto').reset();
+
+                    // Recargar lista de productos
+                    setTimeout(() => {
+                        document.getElementById('productos-tab').click();
+                        document.getElementById('btn-productos').click();
+                    }, 1000);
+                } else {
+                    showToast('error', 'Error', data.message || 'Error al crear el producto');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showResult('agregar-producto-result', { error: 'Error al crear producto' });
+                showToast('error', 'Error', 'No se pudo conectar con el servidor');
+            } finally {
+                toggleLoading('agregar-producto-loading', false);
+            }
+        });
 
         // Obtener productos seleccionados
         const elementos = [];
@@ -872,9 +1127,221 @@
 
     // Cargar datos iniciales
     window.addEventListener('load', () => {
+        // Cargar idioma preferido
+        const preferredLanguage = localStorage.getItem('preferredLanguage') || 'es';
+        establecerIdioma(preferredLanguage);
+
         // Iniciar cargando productos
         document.getElementById('btn-productos').click();
     });
+    // Editar producto: cargar datos
+    function editarProducto(id) {
+        toggleLoading('editar-producto-loading', true);
+
+        fetch(`/api/productos/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.data) {
+                    const producto = data.data;
+
+                    // Llenar formulario
+                    document.getElementById('editar-producto-id').value = producto.id;
+                    document.getElementById('editar-producto-nombre').value = producto.nombre;
+                    document.getElementById('editar-producto-precio').value = producto.precio;
+                    document.getElementById('editar-producto-descripcion').value = producto.descripcion || '';
+                    document.getElementById('editar-producto-stock').value = producto.stock;
+
+                    // Mostrar modal
+                    const modal = new bootstrap.Modal(document.getElementById('editarProductoModal'));
+                    modal.show();
+                } else {
+                    showToast('error', 'Error', data.message || 'No se pudo obtener los datos del producto');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('error', 'Error', 'No se pudo conectar con el servidor');
+            })
+            .finally(() => {
+                toggleLoading('editar-producto-loading', false);
+            });
+    }
+
+    // Guardar cambios de edición
+    document.getElementById('btn-guardar-edicion').addEventListener('click', async () => {
+        const id = document.getElementById('editar-producto-id').value;
+        const nombre = document.getElementById('editar-producto-nombre').value.trim();
+        const precio = parseFloat(document.getElementById('editar-producto-precio').value);
+        const descripcion = document.getElementById('editar-producto-descripcion').value.trim();
+        const stock = parseInt(document.getElementById('editar-producto-stock').value);
+
+        if (!nombre || isNaN(precio) || precio <= 0 || isNaN(stock) || stock < 0) {
+            showToast('error', 'Error', 'Por favor, completa todos los campos obligatorios correctamente.');
+            return;
+        }
+
+        toggleLoading('editar-producto-loading', true);
+        showResult('editar-producto-result', null);
+
+        try {
+            const response = await fetch(`/api/productos/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id,           // Añadir el ID en el cuerpo de la solicitud
+                    nombre,
+                    precio,
+                    descripcion,
+                    stock
+                })
+            });
+
+            const data = await response.json();
+            showResult('editar-producto-result', data);
+
+            if (data.success) {
+                showToast('success', 'Éxito', 'Producto actualizado correctamente');
+
+                // Cerrar modal después de un tiempo
+                setTimeout(() => {
+                    bootstrap.Modal.getInstance(document.getElementById('editarProductoModal')).hide();
+
+                    // Recargar lista de productos
+                    document.getElementById('btn-productos').click();
+                }, 1500);
+            } else {
+                showToast('error', 'Error', data.message || 'Error al actualizar el producto');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showResult('editar-producto-result', { error: 'Error al actualizar producto' });
+            showToast('error', 'Error', 'No se pudo conectar con el servidor');
+        } finally {
+            toggleLoading('editar-producto-loading', false);
+        }
+    });
+    // Establecer el idioma de la interfaz (versión corregida)
+    function establecerIdioma(lang) {
+        // Actualizar todos los selectores de idioma en la página
+        document.getElementById('lang-saludo').value = lang;
+        document.getElementById('lang-pedidos').value = lang;
+        document.getElementById('lang-crear').value = lang;
+        document.getElementById('producto-lang').value = lang;
+
+        // Guardar preferencia en localStorage
+        localStorage.setItem('preferredLanguage', lang);
+
+        // Actualizar textos de la interfaz según el idioma
+        const textos = {
+            'en': {
+                'header-title': 'Multilingual API',
+                'header-subtitle': 'A REST API with support for multiple languages',
+                'saludos-tab': 'Greetings',
+                'productos-tab': 'Products',
+                'pedidos-tab': 'Orders',
+                'crear-tab': 'Create Order',
+                'agregar-producto-tab': 'Add Product',
+                'btn-saludo': 'Get Greeting',
+                'btn-productos': 'Update Products',
+                'btn-pedidos': 'Get Orders',
+                'btn-crear': 'Create Order',
+                'doc-title': 'API Documentation',
+                'doc-desc': 'Explore the complete API documentation and test all endpoints:',
+                'doc-btn': 'Open Swagger UI',
+                'footer-text': 'Multilingual Shop API - Created with Spring Boot and WebFlux'
+            },
+            'es': {
+                'header-title': 'API Multilingüe',
+                'header-subtitle': 'Una API REST con soporte para varios idiomas',
+                'saludos-tab': 'Saludos',
+                'productos-tab': 'Productos',
+                'pedidos-tab': 'Pedidos',
+                'crear-tab': 'Crear Pedido',
+                'agregar-producto-tab': 'Agregar Producto',
+                'btn-saludo': 'Obtener Saludo',
+                'btn-productos': 'Actualizar Productos',
+                'btn-pedidos': 'Obtener Pedidos',
+                'btn-crear': 'Crear Pedido',
+                'doc-title': 'Documentación de la API',
+                'doc-desc': 'Explora la documentación completa de la API y prueba todos los endpoints:',
+                'doc-btn': 'Abrir Swagger UI',
+                'footer-text': 'API de Tienda Multilingüe - Creada con Spring Boot y WebFlux'
+            },
+            'fr': {
+                'header-title': 'API Multilingue',
+                'header-subtitle': 'Une API REST avec support pour plusieurs langues',
+                'saludos-tab': 'Salutations',
+                'productos-tab': 'Produits',
+                'pedidos-tab': 'Commandes',
+                'crear-tab': 'Créer Commande',
+                'agregar-producto-tab': 'Ajouter Produit',
+                'btn-saludo': 'Obtenir Salutation',
+                'btn-productos': 'Actualiser Produits',
+                'btn-pedidos': 'Obtenir Commandes',
+                'btn-crear': 'Créer Commande',
+                'doc-title': 'Documentation de l\'API',
+                'doc-desc': 'Explorez la documentation complète de l\'API et testez tous les points d\'accès:',
+                'doc-btn': 'Ouvrir Swagger UI',
+                'footer-text': 'API de Boutique Multilingue - Créée avec Spring Boot et WebFlux'
+            }
+        };
+
+        const textoActual = textos[lang] || textos['en'];
+
+        // Actualizar los textos en la interfaz (usando selectores válidos)
+        document.querySelector('.header h1').innerText = textoActual['header-title'];
+        document.querySelector('.header p').innerText = textoActual['header-subtitle'];
+
+        document.querySelector('#saludos-tab').innerText = textoActual['saludos-tab'];
+        document.querySelector('#productos-tab').innerText = textoActual['productos-tab'];
+        document.querySelector('#pedidos-tab').innerText = textoActual['pedidos-tab'];
+        document.querySelector('#crear-tab').innerText = textoActual['crear-tab'];
+        document.querySelector('#agregar-producto-tab').innerText = textoActual['agregar-producto-tab'];
+
+        document.querySelector('#btn-saludo').innerText = textoActual['btn-saludo'];
+        document.querySelector('#btn-productos').innerText = textoActual['btn-productos'];
+        document.querySelector('#btn-pedidos').innerText = textoActual['btn-pedidos'];
+        document.querySelector('#btn-crear-pedido').innerText = textoActual['btn-crear'];
+
+        // Usar selectores más específicos para los elementos de documentación y footer
+        // En lugar de usar :contains que no es estándar
+        const cardHeaders = document.querySelectorAll('.card-header');
+        for (let header of cardHeaders) {
+            if (header.textContent.includes('Documentación') ||
+                header.textContent.includes('Documentation') ||
+                header.textContent.includes('Documentation')) {
+                header.innerText = textoActual['doc-title'];
+                break;
+            }
+        }
+
+        const cardBodyPs = document.querySelectorAll('.card-body p');
+        for (let p of cardBodyPs) {
+            if (p.textContent.includes('Explora') ||
+                p.textContent.includes('Explore') ||
+                p.textContent.includes('Explorez')) {
+                p.innerText = textoActual['doc-desc'];
+                break;
+            }
+        }
+
+        // Encontrar el botón específico de Swagger
+        const cardBtns = document.querySelectorAll('.card-body a.btn');
+        for (let btn of cardBtns) {
+            if (btn.getAttribute('href') === '/swagger-ui.html') {
+                btn.innerText = textoActual['doc-btn'];
+                break;
+            }
+        }
+
+        // Actualizar el texto del footer
+        const footerPs = document.querySelectorAll('.footer p');
+        if (footerPs.length > 0) {
+            footerPs[0].innerText = textoActual['footer-text'];
+        }
+    }
 </script>
 </body>
 </html>

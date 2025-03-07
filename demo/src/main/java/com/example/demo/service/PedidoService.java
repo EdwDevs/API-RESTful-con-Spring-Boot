@@ -80,4 +80,23 @@ public class PedidoService {
     public Flux<Pedido> obtenerTodosPedidos() {
         return Flux.fromIterable(pedidos.values());
     }
+
+    // Añadir este método a PedidoService.java (DENTRO de la clase)
+    public Mono<Void> eliminarPedido(String id) {
+        return Mono.justOrEmpty(pedidos.get(id))
+                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Pedido no encontrado con ID: " + id)))
+                .flatMap(pedido -> {
+                    // Devolver el stock de los productos
+                    return Flux.fromIterable(pedido.getElementos())
+                            .flatMap(elemento -> {
+                                return productoService.obtenerProductoPorId(elemento.getProductoId())
+                                        .flatMap(producto -> {
+                                            // Restaurar el stock
+                                            producto.setStock(producto.getStock() + elemento.getCantidad());
+                                            return productoService.guardarProducto(producto);
+                                        });
+                            })
+                            .then(Mono.fromRunnable(() -> pedidos.remove(id)));
+                });
+    }
 }

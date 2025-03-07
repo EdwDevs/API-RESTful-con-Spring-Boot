@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import com.example.demo.exception.ResourceNotFoundException;
 
 import java.util.Locale;
 
@@ -62,6 +63,23 @@ public class PedidoController {
                 .map(nuevoPedido -> {
                     String mensaje = messageSource.getMessage("pedido.creado", null, locale);
                     return ApiResponse.success(nuevoPedido, mensaje + ": " + nuevoPedido.getId());
+                });
+    }
+    @DeleteMapping("/{id}")
+    public Mono<ApiResponse<Object>> eliminarPedido(
+            @PathVariable String id,
+            @RequestParam(defaultValue = "en") String lang) {
+
+        Locale locale = new Locale(lang);
+
+        return pedidoService.eliminarPedido(id)
+                .then(Mono.fromCallable(() -> {
+                    String mensaje = messageSource.getMessage("pedido.eliminado", null, locale);
+                    return ApiResponse.success(null, mensaje + ": " + id);
+                }))
+                .onErrorResume(ResourceNotFoundException.class, ex -> {
+                    String mensaje = messageSource.getMessage("pedido.noEncontrado", null, locale);
+                    return Mono.just(ApiResponse.error(null, mensaje + ": " + id));
                 });
     }
 }
