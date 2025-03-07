@@ -28,6 +28,9 @@ public class Pedido {
     private String estado;
     private Double total;
 
+    public Pedido(String number, String cliente1, List<ElementoPedido> elementos, String date, double v, EstadoPedido estadoPedido) {
+    }
+
     // Método para calcular el total
     public void calcularTotal() {
         this.total = elementos.stream()

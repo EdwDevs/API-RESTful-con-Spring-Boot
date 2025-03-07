@@ -17,11 +17,13 @@ import java.util.Locale;
 @RequestMapping("/api/pedidos")
 public class PedidoController {
 
-    @Autowired
-    private PedidoService pedidoService;
+    private final PedidoService pedidoService;
+    private final MessageSource messageSource;
 
-    @Autowired
-    private MessageSource messageSource;
+    public PedidoController(PedidoService pedidoService, MessageSource messageSource) {
+        this.pedidoService = pedidoService;
+        this.messageSource = messageSource;
+    }
 
     @GetMapping
     public Flux<ApiResponse<Pedido>> listarPedidos(

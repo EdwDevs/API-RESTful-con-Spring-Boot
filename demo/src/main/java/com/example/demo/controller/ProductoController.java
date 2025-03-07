@@ -4,18 +4,25 @@ import com.example.demo.model.ApiResponse;
 import com.example.demo.model.Producto;
 import com.example.demo.service.ProductoService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Locale;
+
 @RestController
 @RequestMapping("/api/productos")
 public class ProductoController {
 
-    @Autowired
-    private ProductoService productoService;
+    private final ProductoService productoService;
+    private final MessageSource messageSource;
+
+    public ProductoController(ProductoService productoService, MessageSource messageSource) {
+        this.productoService = productoService;
+        this.messageSource = messageSource;
+    }
 
     @GetMapping
     public Flux<ApiResponse<Producto>> listarProductos() {

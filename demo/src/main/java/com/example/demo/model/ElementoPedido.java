@@ -18,4 +18,7 @@ public class ElementoPedido {
 
     private Double precioUnitario;
     private String nombreProducto;
+
+    public ElementoPedido(String number, int i) {
+    }
 }

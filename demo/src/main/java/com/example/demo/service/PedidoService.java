@@ -76,4 +76,8 @@ public class PedidoService {
                     return pedido;
                 });
     }
+
+    public Flux<Pedido> obtenerTodosPedidos() {
+        return Flux.fromIterable(pedidos.values());
+    }
 }

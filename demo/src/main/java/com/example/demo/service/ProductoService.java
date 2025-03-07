@@ -1,73 +1,106 @@
 package com.example.demo.service;
 
-import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Producto;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
+import jakarta.annotation.PostConstruct;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class ProductoService {
 
-    // Simular una base de datos con un Map
     private final Map<String, Producto> productos = new ConcurrentHashMap<>();
 
-    public ProductoService() {
-        // Añadir algunos productos de ejemplo
-        productos.put("1", new Producto("1", "Laptop", 999.99, "Laptop de última generación", 5));
-        productos.put("2", new Producto("2", "Smartphone", 599.99, "Smartphone con cámara de alta resolución", 10));
-        productos.put("3", new Producto("3", "Auriculares", 99.99, "Auriculares inalámbricos", 20));
-        productos.put("4", new Producto("4", "Monitor", 299.99, "Monitor 4K 27 pulgadas", 8));
-        productos.put("5", new Producto("5", "Teclado", 49.99, "Teclado mecánico RGB", 15));
-    }
-
+    // Obtener todos los productos
     public Flux<Producto> obtenerProductos() {
         return Flux.fromIterable(productos.values());
     }
 
+    // Obtener un producto por ID
     public Mono<Producto> obtenerProductoPorId(String id) {
-        return Mono.justOrEmpty(productos.get(id))
-                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Producto no encontrado con ID: " + id)));
+        Producto producto = productos.get(id);
+        if (producto == null) {
+            return Mono.error(new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+        }
+        return Mono.just(producto);
     }
 
+    // Guardar un nuevo producto
     public Mono<Producto> guardarProducto(Producto producto) {
-        if (producto.getId() == null || producto.getId().trim().isEmpty()) {
-            return Mono.error(new BadRequestException("El ID del producto no puede estar vacío"));
+        if (producto.getId() == null || producto.getId().isEmpty()) {
+            producto.setId(UUID.randomUUID().toString());
         }
-
-        // Validaciones adicionales
-        if (producto.getNombre() == null || producto.getNombre().trim().isEmpty()) {
-            return Mono.error(new BadRequestException("El nombre del producto es obligatorio"));
-        }
-
-        if (producto.getPrecio() == null || producto.getPrecio() <= 0) {
-            return Mono.error(new BadRequestException("El precio debe ser mayor que cero"));
-        }
-
-        // Valor por defecto para la descripción si está vacía
-        if (producto.getDescripcion() == null || producto.getDescripcion().trim().isEmpty()) {
-            producto.setDescripcion("Descripción no disponible");
-        }
-
-        // Valor por defecto para el stock si es nulo
-        if (producto.getStock() == null) {
-            producto.setStock(0);
-        }
-
         productos.put(producto.getId(), producto);
         return Mono.just(producto);
     }
 
+    // Actualizar un producto existente
+    public Mono<Producto> actualizarProducto(String id, Producto producto) {
+        if (!productos.containsKey(id)) {
+            return Mono.error(new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+        }
+        producto.setId(id);
+        productos.put(id, producto);
+        return Mono.just(producto);
+    }
+
+    // Eliminar un producto
     public Mono<Void> eliminarProducto(String id) {
-        return Mono.justOrEmpty(productos.get(id))
-                .switchIfEmpty(Mono.error(new ResourceNotFoundException("Producto no encontrado con ID: " + id)))
-                .flatMap(p -> {
-                    productos.remove(id);
-                    return Mono.empty();
+        if (!productos.containsKey(id)) {
+            return Mono.error(new ResourceNotFoundException("Producto no encontrado con ID: " + id));
+        }
+        productos.remove(id);
+        return Mono.empty();
+    }
+
+    // Actualizar stock de un producto
+    public Mono<Producto> actualizarStock(String id, int cantidad) {
+        return obtenerProductoPorId(id)
+                .flatMap(producto -> {
+                    int nuevoStock = producto.getStock() - cantidad;
+                    if (nuevoStock < 0) {
+                        return Mono.error(new IllegalArgumentException("Stock insuficiente"));
+                    }
+                    producto.setStock(nuevoStock);
+                    return Mono.just(producto);
                 });
+    }
+    @PostConstruct
+    public void inicializarProductos() {
+        // Producto 1
+        Producto laptop = new Producto();
+        laptop.setId("prod-1");
+        laptop.setNombre("Laptop Dell XPS 13");
+        laptop.setPrecio(1299.99);
+        laptop.setDescripcion("Laptop ultradelgada con pantalla 4K");
+        laptop.setStock(10);
+        productos.put(laptop.getId(), laptop);
+
+        // Producto 2
+        Producto smartphone = new Producto();
+        smartphone.setId("prod-2");
+        smartphone.setNombre("iPhone 14 Pro");
+        smartphone.setPrecio(999.99);
+        smartphone.setDescripcion("Último modelo con cámara avanzada");
+        smartphone.setStock(15);
+        productos.put(smartphone.getId(), smartphone);
+
+        // Producto 3
+        Producto auriculares = new Producto();
+        auriculares.setId("prod-3");
+        auriculares.setNombre("AirPods Pro");
+        auriculares.setPrecio(249.99);
+        auriculares.setDescripcion("Auriculares con cancelación de ruido");
+        auriculares.setStock(20);
+        productos.put(auriculares.getId(), auriculares);
+    }
+
+    // Método adicional que estamos añadiendo
+    public Flux<Producto> obtenerTodos() {
+        return Flux.fromIterable(productos.values());
     }
 }
